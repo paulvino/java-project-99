@@ -52,6 +52,7 @@ dependencies {
     implementation("net.datafaker:datafaker:2.0.2")
 
     runtimeOnly("com.h2database:h2:2.2.224")
+    runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
