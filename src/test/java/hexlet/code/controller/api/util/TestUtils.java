@@ -1,5 +1,6 @@
 package hexlet.code.controller.api.util;
 
+import hexlet.code.repository.UserRepository;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
@@ -11,13 +12,20 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import net.datafaker.Faker;
 
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Component
-public class ModelGenerator {
+public class TestUtils {
     private Model<User> userModel;
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     @Autowired
     private Faker faker;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @PostConstruct
     private void init() {
@@ -30,5 +38,9 @@ public class ModelGenerator {
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password())
                 .toModel();
+    }
+
+    public void clean() {
+        userRepository.deleteAll();
     }
 }

@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
+import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.model.User;
 import hexlet.code.util.UserUtils;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.controller.api.util.ModelGenerator;
+import hexlet.code.controller.api.util.TestUtils;
 import net.datafaker.Faker;
 
 @SpringBootTest
@@ -45,7 +47,7 @@ public class UserControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private ModelGenerator modelGenerator;
+    private TestUtils testUtils;
 
     @Autowired
     private ObjectMapper om;
@@ -57,14 +59,14 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
-        testUser = Instancio.of(modelGenerator.getUserModel())
+        testUser = Instancio.of(testUtils.getUserModel())
                 .create();
         userRepository.save(testUser);
     }
 
     @AfterEach
     public void clean() {
-        userRepository.deleteAll();
+        testUtils.clean();
     }
 
     @Test
@@ -77,7 +79,11 @@ public class UserControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
+        var users = om.readValue(body, new TypeReference<List<User>>() { });
+        var expected = userRepository.findAll();
+
         assertThatJson(body).isArray();
+        assertThat(users).containsAll(expected);
     }
 
     @Test
@@ -85,19 +91,26 @@ public class UserControllerTest {
         var request = get("/api/users/" + testUser.getId())
                 .with(token);
 
-        mockMvc.perform(request)
-                .andExpect(status().isOk());
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
 
-        var user = userRepository.findById(testUser.getId()).get();
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isNotNull().and(
+                json -> json.node("id").isEqualTo(testUser.getId()),
+                json -> json.node("firstName").isEqualTo(testUser.getFirstName()),
+                json -> json.node("lastName").isEqualTo(testUser.getLastName()),
+                json -> json.node("username").isEqualTo(testUser.getEmail()),
+                json -> json.node("createdAt").isEqualTo(testUser.getCreatedAt().format(TestUtils.FORMATTER))
+        );
 
-        assertThat(user.getFirstName()).isEqualTo(testUser.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(testUser.getLastName());
-        assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
+        var receivedUser = om.readValue(body, User.class);
+        assertThat(receivedUser).isEqualTo(testUser);
     }
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel())
+        var data = Instancio.of(testUtils.getUserModel())
                 .create();
 
         var usersCount = userRepository.count();
@@ -147,6 +160,7 @@ public class UserControllerTest {
         assertThat(user.getFirstName()).isEqualTo(("Hope"));
         assertThat(user.getEmail()).isEqualTo(newMail);
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
+        assertThat(userRepository.findByEmail(newMail)).get().isEqualTo(user);
     }
 
     @Test
