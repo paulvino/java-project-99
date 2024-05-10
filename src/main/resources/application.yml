@@ -1,11 +1,3 @@
-logging:
-  level:
-    root: INFO
-    org:
-      springframework:
-        web: DEBUG
-        security: DEBUG
-
 spring:
   jpa:
     generate-ddl: true
@@ -21,3 +13,6 @@ spring:
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem
+
+server:
+  address: 0.0.0.0
