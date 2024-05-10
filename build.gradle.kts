@@ -1,5 +1,4 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
+import com.adarshr.gradle.testlogger.theme.ThemeType
 
 plugins {
     application
@@ -8,6 +7,7 @@ plugins {
     id("org.springframework.boot") version "3.2.5"
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok") version "8.6"
+    id("com.adarshr.test-logger") version "4.0.0"
 }
 
 group = "hexlet.code"
@@ -64,10 +64,17 @@ tasks.withType<Test> {
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
-        exceptionFormat = TestExceptionFormat.FULL
-        events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
-        showStandardStreams = true
-        finalizedBy(tasks.jacocoTestReport)
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
     }
+}
+
+testlogger {
+    theme = ThemeType.MOCHA
+    showStandardStreams = true
 }
