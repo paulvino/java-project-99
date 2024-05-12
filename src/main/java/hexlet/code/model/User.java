@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
+@ToString(includeFieldNames = true, onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "users")
 public class User implements UserDetails, BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +45,7 @@ public class User implements UserDetails, BaseEntity {
 
     @Email
     @Column(name = "email", unique = true)
+    @ToString.Include
     private String email;
 
     private String passwordDigest;

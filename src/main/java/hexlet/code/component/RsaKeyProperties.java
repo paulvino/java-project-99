@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class RsaKeyProperties {
+
     private RSAPublicKey publicKey;
+
     private RSAPrivateKey privateKey;
 }

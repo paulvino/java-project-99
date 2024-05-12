@@ -137,14 +137,18 @@ public class UserControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var newMail = faker.internet().emailAddress();
+        var userPassword = testUser.getPassword();
+
+        var newEmail = faker.internet().emailAddress();
         var data = new HashMap<>();
         data.put("firstName", "Hope");
-        data.put("email", newMail);
+        data.put("email", newEmail);
 
         var usersCount = userRepository.count();
 
         var oldEmail = testUser.getEmail();
+
+        token = jwt().jwt(builder -> builder.subject(oldEmail));
 
         var request = put("/api/users/" + testUser.getId())
                 .with(token)
@@ -157,20 +161,56 @@ public class UserControllerTest {
         assertThat(userRepository.count()).isEqualTo(usersCount);
 
         var user = userRepository.findById(testUser.getId()).get();
+
         assertThat(user.getFirstName()).isEqualTo(("Hope"));
-        assertThat(user.getEmail()).isEqualTo(newMail);
+        assertThat(user.getEmail()).isEqualTo(newEmail);
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
-        assertThat(userRepository.findByEmail(newMail)).get().isEqualTo(user);
+        assertThat(userRepository.findByEmail(newEmail)).get().isEqualTo(user);
+
+        var userHashedPassword = user.getPassword();
+        assertThat(userPassword).isNotEqualTo(userHashedPassword);
+    }
+
+    @Test
+    public void testUpdateUserWithoutPermissions() throws Exception {
+        var oldEmail = testUser.getEmail();
+        var newEmail = faker.internet().emailAddress();
+
+        var data = new HashMap<>();
+        data.put("email", newEmail);
+
+        var request = put("/api/users/" + testUser.getId())
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isForbidden());
+
+        assertThat(userRepository.findByEmail(oldEmail)).isPresent();
+        assertThat(userRepository.findByEmail(newEmail)).isEmpty();
     }
 
     @Test
     public void testDestroy() throws Exception {
         var usersCount = userRepository.count();
 
-        mockMvc.perform(delete("/api/users/" + testUser.getId()))
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
+
+        mockMvc.perform(delete("/api/users/" + testUser.getId()).with(token))
                 .andExpect(status().isNoContent());
 
         assertThat(userRepository.count()).isEqualTo(usersCount - 1);
         assertThat(userRepository.findById(testUser.getId())).isEmpty();
+    }
+
+    @Test
+    public void testDestroyUserWithoutPermissions() throws Exception {
+        var usersCount = userRepository.count();
+
+        mockMvc.perform(delete("/api/users/" + testUser.getId()).with(token))
+                .andExpect(status().isForbidden());
+
+        assertThat(userRepository.count()).isEqualTo(usersCount);
     }
 }
