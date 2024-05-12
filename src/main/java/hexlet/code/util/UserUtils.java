@@ -31,12 +31,12 @@ public class UserUtils {
         var email = authentication.getName();
         return userRepository.findByEmail(email).get();
     }
-//
-//    @Bean
-//    public User getAdmin() {
-//        var admin = new User();
-//        admin.setEmail(ADMIN_EMAIL);
-//        admin.setPasswordDigest(UserUtils.ADMIN_PASSWORD);
-//        return admin;
-//    }
+
+    @Bean
+    public User getAdmin() {
+        var admin = new User();
+        admin.setEmail(ADMIN_EMAIL);
+        admin.setPasswordDigest(UserUtils.ADMIN_PASSWORD);
+        return admin;
+    }
 }
