@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public abstract class UserMapper {
+
     @Autowired
     private BCryptPasswordEncoder encoder;
 
@@ -33,7 +34,7 @@ public abstract class UserMapper {
     @Mapping(target = "password", ignore = true)
     public abstract UserDTO map(User model);
 
-    public abstract void update(UserUpdateDTO dto, @MappingTarget User destination);
+    public abstract void update(UserUpdateDTO update, @MappingTarget User destination);
 
     @BeforeMapping
     public void encryptPassword(UserCreateDTO data) {

@@ -6,21 +6,25 @@ import hexlet.code.dto.UserDto.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
-import lombok.AllArgsConstructor;
+//import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UserDTO> getAll() {
         var users = userRepository.findAll();
@@ -32,6 +36,7 @@ public class UserService {
     public UserDTO findById(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+
         return userMapper.map(user);
     }
 
@@ -41,8 +46,8 @@ public class UserService {
         var hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPasswordDigest(hashedPassword);
 
-
         userRepository.save(user);
+
         return userMapper.map(user);
     }
 
@@ -56,6 +61,7 @@ public class UserService {
         user.setPasswordDigest(hashedPassword);
 
         userRepository.save(user);
+
         return userMapper.map(user);
     }
 
