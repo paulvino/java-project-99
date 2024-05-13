@@ -100,7 +100,7 @@ public class UserControllerTest {
                 json -> json.node("id").isEqualTo(testUser.getId()),
                 json -> json.node("firstName").isEqualTo(testUser.getFirstName()),
                 json -> json.node("lastName").isEqualTo(testUser.getLastName()),
-                json -> json.node("username").isEqualTo(testUser.getEmail()),
+                json -> json.node("email").isEqualTo(testUser.getEmail()),
                 json -> json.node("createdAt").isEqualTo(testUser.getCreatedAt().format(TestUtils.FORMATTER))
         );
 
