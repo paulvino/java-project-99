@@ -1,5 +1,7 @@
 package hexlet.code.controller.api.util;
 
+import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.instancio.Instancio;
 import org.instancio.Model;
@@ -17,7 +19,10 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Component
 public class TestUtils {
+
     private Model<User> userModel;
+
+    private Model<TaskStatus> taskStatusModel;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -26,6 +31,9 @@ public class TestUtils {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
 
     @PostConstruct
     private void init() {
@@ -38,9 +46,17 @@ public class TestUtils {
                 .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
                 .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password())
                 .toModel();
+
+        taskStatusModel = Instancio.of(TaskStatus.class)
+                .ignore(Select.field(TaskStatus::getId))
+                .ignore(Select.field(TaskStatus::getCreatedAt))
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
+                .toModel();
     }
 
     public void clean() {
         userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
     }
 }

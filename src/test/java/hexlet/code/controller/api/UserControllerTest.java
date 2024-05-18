@@ -139,14 +139,13 @@ public class UserControllerTest {
     public void testUpdate() throws Exception {
         var userPassword = testUser.getPassword();
 
+        var oldEmail = testUser.getEmail();
         var newEmail = faker.internet().emailAddress();
         var data = new HashMap<>();
         data.put("firstName", "Hope");
         data.put("email", newEmail);
 
         var usersCount = userRepository.count();
-
-        var oldEmail = testUser.getEmail();
 
         token = jwt().jwt(builder -> builder.subject(oldEmail));
 
@@ -172,7 +171,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testUpdateUserWithoutPermissions() throws Exception {
+    public void testUpdateUserWithoutAuthorization() throws Exception {
         var oldEmail = testUser.getEmail();
         var newEmail = faker.internet().emailAddress();
 
@@ -205,7 +204,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testDestroyUserWithoutPermissions() throws Exception {
+    public void testDestroyUserWithoutAuthorization() throws Exception {
         var usersCount = userRepository.count();
 
         mockMvc.perform(delete("/api/users/" + testUser.getId()).with(token))
