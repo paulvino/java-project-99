@@ -98,7 +98,7 @@ public class TaskStatusControllerTest {
                 json -> json.node("id").isEqualTo(testTaskStatus.getId()),
                 json -> json.node("name").isEqualTo(testTaskStatus.getName()),
                 json -> json.node("slug").isEqualTo(testTaskStatus.getSlug()),
-                json -> json.node("createdAt").isEqualTo(testTaskStatus.getCreatedAt())
+                json -> json.node("createdAt").isEqualTo(testTaskStatus.getCreatedAt().format(TestUtils.FORMATTER))
         );
 
         var receivedTaskStatus = om.readValue(body, TaskStatus.class);
