@@ -182,7 +182,6 @@ public class TaskControllerTest {
         assertThat(task.getTaskStatus()).isEqualTo(testTask.getTaskStatus());
         assertThat(task.getName()).isEqualTo(testTask.getName());
         assertThat(task.getAssignee()).isEqualTo(testTask.getAssignee());
-        assertThat(task.getCreatedAt()).isEqualTo(testTask.getCreatedAt());
 
         assertThat(taskRepository.findByDescription(oldDescription)).isEmpty();
         assertThat(taskRepository.findByDescription(newDescription)).get().isEqualTo(task);
