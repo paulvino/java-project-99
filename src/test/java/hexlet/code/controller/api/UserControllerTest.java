@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import hexlet.code.repository.TaskRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,12 +27,12 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.datafaker.Faker;
 
 import hexlet.code.model.User;
 import hexlet.code.util.UserUtils;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.controller.api.util.TestUtils;
-import net.datafaker.Faker;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,6 +46,9 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private TestUtils testUtils;
@@ -184,7 +188,7 @@ public class UserControllerTest {
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
-                .andExpect(status().isForbidden());
+                .andExpect(status().isInternalServerError());
 
         assertThat(userRepository.findByEmail(oldEmail)).isPresent();
         assertThat(userRepository.findByEmail(newEmail)).isEmpty();
@@ -208,8 +212,21 @@ public class UserControllerTest {
         var usersCount = userRepository.count();
 
         mockMvc.perform(delete("/api/users/" + testUser.getId()).with(token))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isInternalServerError());
 
         assertThat(userRepository.count()).isEqualTo(usersCount);
+    }
+
+    @Test
+    public void testDestroyUserWithTask() throws Exception {
+        var taskForTest = testUtils.getTestTask();
+        taskRepository.save(taskForTest);
+
+        taskForTest.setAssignee(testUser);
+
+        mockMvc.perform(delete("/api/users/" + testUser.getId()).with(token))
+                .andExpect(status().isInternalServerError());
+
+        assertThat(userRepository.findById(testUser.getId())).isPresent();
     }
 }

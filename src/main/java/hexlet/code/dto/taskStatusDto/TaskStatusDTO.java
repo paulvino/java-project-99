@@ -17,6 +17,6 @@ public class TaskStatusDTO {
 
     private String slug;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "dd.MM.yyyy, HH:mm")
     private LocalDateTime createdAt;
 }
