@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,6 +93,44 @@ public class TaskControllerTest {
         var expected = taskRepository.findAll();
 
         assertThat(tasks).containsAll(expected);
+    }
+
+    @Test
+    public void testIndexWithFilter() throws Exception {
+        var titleCont = testTask.getName().substring(1).toLowerCase();
+        var assigneeId = testTask.getAssignee().getId();
+        var status = testTask.getTaskStatus().getSlug();
+        var labelId = testTask.getLabels().iterator().next().getId();
+
+        var wrongTask = testUtils.getTestTask();
+        taskRepository.save(wrongTask);
+
+        var request = get("/api/tasks"
+                + "?"
+                + "name=" + titleCont
+                + "&assigneeId=" + assigneeId
+                + "&status=" + status
+                + "&labelId=" + labelId)
+                .with(token);
+
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var data = new HashMap<>();
+        data.put("assignee_id", testTask.getAssignee().getId());
+        data.put("content", testTask.getDescription());
+        data.put("createdAt", testTask.getCreatedAt().format(TestUtils.FORMATTER));
+        data.put("id", testTask.getId());
+        data.put("index", testTask.getIndex());
+        data.put("status", testTask.getTaskStatus().getSlug());
+        data.put("title", testTask.getName());
+        data.put("taskLabelIds", List.of(labelId));
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).when(Option.IGNORING_ARRAY_ORDER)
+                .isArray()
+                .contains(om.writeValueAsString(data));
     }
 
     @Test

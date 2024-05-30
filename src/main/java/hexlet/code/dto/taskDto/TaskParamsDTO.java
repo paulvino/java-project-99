@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class TaskParamsDTO {
 
-    private String name;
+    private String titleCont;
 
     private Long assigneeId;
 
-    private String taskStatus;
+    private String status;
 
     private Long labelId;
 }

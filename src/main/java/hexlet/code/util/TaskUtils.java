@@ -9,16 +9,16 @@ import org.springframework.stereotype.Component;
 public class TaskUtils {
 
     public Specification<Task> build(TaskParamsDTO params) {
-        return withName(params.getName())
+        return withTitleCont(params.getTitleCont())
                 .and(withAssigneeId(params.getAssigneeId()))
-                .and(withTaskStatus(params.getTaskStatus()))
+                .and(withTaskStatus(params.getStatus()))
                 .and(withLabelId(params.getLabelId()));
     }
 
-    private Specification<Task> withName(String data) {
+    private Specification<Task> withTitleCont(String data) {
         return (root, query, criteriaBuilder) -> data == null
                 ? criteriaBuilder.conjunction()
-                : criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + data + "%");
+                : criteriaBuilder.like(criteriaBuilder.lower(root.get("titleCont")), "%" + data + "%");
     }
 
     private Specification<Task> withAssigneeId(Long assigneeId) {
