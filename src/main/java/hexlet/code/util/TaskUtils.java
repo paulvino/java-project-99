@@ -11,7 +11,8 @@ public class TaskUtils {
     public Specification<Task> build(TaskParamsDTO params) {
         return withName(params.getName())
                 .and(withAssigneeId(params.getAssigneeId()))
-                .and(withTaskStatus(params.getTaskStatus()));
+                .and(withTaskStatus(params.getTaskStatus()))
+                .and(withLabelId(params.getLabelId()));
     }
 
     private Specification<Task> withName(String data) {
@@ -30,5 +31,11 @@ public class TaskUtils {
         return (root, query, criteriaBuilder) -> slug == null
                 ? criteriaBuilder.conjunction()
                 : criteriaBuilder.equal(root.get("taskStatus").get("slug"), slug);
+    }
+
+    private Specification<Task> withLabelId(Long labelId) {
+        return (root, query, criteriaBuilder) -> labelId == null
+                ? criteriaBuilder.conjunction()
+                : criteriaBuilder.equal(root.get("labels").get("id"), labelId);
     }
 }

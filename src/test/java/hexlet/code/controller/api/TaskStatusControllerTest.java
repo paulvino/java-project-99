@@ -128,13 +128,13 @@ public class TaskStatusControllerTest {
 
         assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount + 1);
 
-        var taskStatus = taskStatusRepository.findByName(data.getName()).get();
+        var addedTaskStatus = taskStatusRepository.findByName(data.getName()).get();
 
-        assertNotNull(taskStatus);
+        assertNotNull(addedTaskStatus);
         assertThat(taskStatusRepository.findByName(testTaskStatus.getName())).isPresent();
 
-        assertThat(taskStatus.getName()).isEqualTo(data.getName());
-        assertThat(taskStatus.getSlug()).isEqualTo(data.getSlug());
+        assertThat(addedTaskStatus.getName()).isEqualTo(data.getName());
+        assertThat(addedTaskStatus.getSlug()).isEqualTo(data.getSlug());
     }
 
     @Test

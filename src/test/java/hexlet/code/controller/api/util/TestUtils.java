@@ -1,6 +1,7 @@
 package hexlet.code.controller.api.util;
 
 import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.repository.TaskRepository;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Component;
 
 import hexlet.code.model.User;
 import hexlet.code.model.Task;
+import hexlet.code.model.Label;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import net.datafaker.Faker;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Getter
 @Component
@@ -29,7 +33,9 @@ public class TestUtils {
 
     private Model<Task> taskModel;
 
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private Model<Label> labelModel;
+
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Autowired
     private Faker faker;
@@ -42,6 +48,9 @@ public class TestUtils {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @PostConstruct
     private void init() {
@@ -70,6 +79,14 @@ public class TestUtils {
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
                 .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
+                .supply(Select.field(Task::getLabels), () -> new HashSet<Label>())
+                .toModel();
+
+        labelModel = Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .ignore(Select.field(Label::getCreatedAt))
+                .supply(Select.field(Label::getName), () -> faker.lorem().word())
+                .supply(Select.field(Label::getTasks), () -> new ArrayList<Task>())
                 .toModel();
     }
 
@@ -78,6 +95,7 @@ public class TestUtils {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @Bean
@@ -94,6 +112,12 @@ public class TestUtils {
                 .create();
         taskStatusRepository.save(testTaskStatus);
         testTask.setTaskStatus(testTaskStatus);
+
+        var testLabel = Instancio.of(getLabelModel())
+                .create();
+        labelRepository.save(testLabel);
+        testTask.getLabels().add(testLabel);
+        testLabel.getTasks().add(testTask);
 
         return testTask;
     }

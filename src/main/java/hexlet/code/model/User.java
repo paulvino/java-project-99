@@ -1,6 +1,5 @@
 package hexlet.code.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,7 +55,6 @@ public class User implements UserDetails, BaseEntity {
     private String passwordDigest;
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy, HH:mm")
     private LocalDateTime createdAt;
 
     @LastModifiedDate

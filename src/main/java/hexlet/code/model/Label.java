@@ -7,9 +7,10 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,8 +27,8 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "task_statuses")
-public class TaskStatus implements BaseEntity {
+@Table(name = "labels")
+public class Label implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,15 +37,12 @@ public class TaskStatus implements BaseEntity {
 
     @Column(unique = true)
     @NotBlank
+    @Size(min = 1, max = 1000)
     private String name;
-
-    @Column(unique = true)
-    @NotBlank
-    private String slug;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "labels", cascade = CascadeType.MERGE)
     private List<Task> tasks;
 }

@@ -30,6 +30,7 @@ public class TaskStatusUtils {
     }
 
     private TaskStatus createTaskStatus(String name, String slug) {
+
         var taskStatus = new TaskStatus();
 
         taskStatus.setName(name);
