@@ -9,4 +9,5 @@
 ### Description:
 Fast and simple-to-use task manager.
 
-[Click here](https://java-project-99-ncps.onrender.com/welcome) to try!
+[Click here](https://java-project-99-ncps.onrender.com/) to try!
+Or [click here](https://java-project-99-ncps.onrender.com/swagger-ui/index.html) to see the API.
