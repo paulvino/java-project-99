@@ -67,8 +67,8 @@ public class TestUtils {
         taskStatusModel = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug())
-                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> faker.internet().slug() + faker.internet().slug())
+                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word() + faker.lorem().word())
                 .toModel();
 
         taskModel = Instancio.of(Task.class)
@@ -76,7 +76,7 @@ public class TestUtils {
                 .ignore(Select.field(Task::getCreatedAt))
                 .ignore(Select.field(Task::getAssignee))
                 .ignore(Select.field(Task::getTaskStatus))
-                .supply(Select.field(Task::getName), () -> faker.lorem().word())
+                .supply(Select.field(Task::getName), () -> faker.lorem().word() + faker.lorem().sentence())
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
                 .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
                 .supply(Select.field(Task::getLabels), () -> new HashSet<Label>())
@@ -85,7 +85,7 @@ public class TestUtils {
         labelModel = Instancio.of(Label.class)
                 .ignore(Select.field(Label::getId))
                 .ignore(Select.field(Label::getCreatedAt))
-                .supply(Select.field(Label::getName), () -> faker.lorem().word())
+                .supply(Select.field(Label::getName), () -> faker.lorem().word() + faker.lorem().sentence())
                 .supply(Select.field(Label::getTasks), () -> new ArrayList<Task>())
                 .toModel();
     }
