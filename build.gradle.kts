@@ -8,6 +8,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok") version "8.6"
     id("com.adarshr.test-logger") version "4.0.0"
+    id("io.sentry.jvm.gradle") version "4.1.0"
 }
 
 group = "hexlet.code"
@@ -88,4 +89,15 @@ tasks.jacocoTestReport {
 testlogger {
     theme = ThemeType.MOCHA
     showStandardStreams = true
+}
+
+sentry {
+    includeSourceContext.set(true)
+    org.set("paulvin")
+    projectName.set("task-manager")
+    authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+}
+
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }

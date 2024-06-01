@@ -16,3 +16,7 @@ rsa:
 
 server:
   address: 0.0.0.0
+
+sentry:
+  dsn: https://2c2b90bf0b446eef87f781f05dde830e@o4507358042456064.ingest.de.sentry.io/4507358045798480
+  traces-sample-rate: 1.0
