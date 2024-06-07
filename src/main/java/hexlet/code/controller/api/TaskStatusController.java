@@ -5,6 +5,7 @@ import hexlet.code.dto.taskStatusDto.TaskStatusDTO;
 import hexlet.code.dto.taskStatusDto.TaskStatusUpdateDTO;
 import hexlet.code.service.TaskStatusService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/task_statuses")
+@RequiredArgsConstructor
 public class TaskStatusController {
 
-    @Autowired
-    private TaskStatusService taskStatusService;
+    private final TaskStatusService taskStatusService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<TaskStatusDTO>> index() {
+    public ResponseEntity<List<TaskStatusDTO>> index() {
         var result = taskStatusService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
@@ -38,25 +39,25 @@ public class TaskStatusController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusData) {
+    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusData) {
         return taskStatusService.create(taskStatusData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    TaskStatusDTO update(@Valid @RequestBody TaskStatusUpdateDTO taskStatusData, @PathVariable Long id) {
+    public TaskStatusDTO update(@Valid @RequestBody TaskStatusUpdateDTO taskStatusData, @PathVariable Long id) {
         return taskStatusService.update(taskStatusData, id);
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    TaskStatusDTO show(@PathVariable Long id) {
+    public TaskStatusDTO show(@PathVariable Long id) {
         return taskStatusService.findById(id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void destroy(@PathVariable Long id) {
+    public void destroy(@PathVariable Long id) {
         taskStatusService.delete(id);
     }
 }

@@ -7,31 +7,27 @@ import hexlet.code.service.CustomUserDetailsService;
 import hexlet.code.util.UserUtils;
 import hexlet.code.util.LabelUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+//@AllArgsConstructor
+@RequiredArgsConstructor
 public class DataInitializer implements ApplicationRunner {
 
-    @Autowired
     private final CustomUserDetailsService userService;
 
-    @Autowired
     private final UserUtils userUtils;
 
-    @Autowired
     private final TaskStatusUtils taskStatusUtils;
 
-    @Autowired
     private final TaskStatusRepository taskStatusRepository;
 
-    @Autowired
     private final LabelUtils labelUtils;
 
-    @Autowired
     private final LabelRepository labelRepository;
 
     @Override

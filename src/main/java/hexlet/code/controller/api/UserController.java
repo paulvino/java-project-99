@@ -5,6 +5,7 @@ import hexlet.code.dto.userDto.UserDTO;
 import hexlet.code.dto.userDto.UserUpdateDTO;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
     private static final String ONLY_OWNER_BY_ID
             = "@userRepository.findById(#id).get().getEmail() == authentication.getName()";
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<UserDTO>> index() {
+    public ResponseEntity<List<UserDTO>> index() {
         var result = userService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
@@ -43,27 +43,27 @@ public class UserController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
+    public UserDTO create(@Valid @RequestBody UserCreateDTO userData) {
         return userService.create(userData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    UserDTO update(@Valid @RequestBody UserUpdateDTO userData, @PathVariable Long id) {
+    public UserDTO update(@Valid @RequestBody UserUpdateDTO userData, @PathVariable Long id) {
         return userService.update(userData, id);
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    UserDTO show(@PathVariable Long id) {
+    public UserDTO show(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    void destroy(@PathVariable Long id) {
+    public void destroy(@PathVariable Long id) {
         userService.delete(id);
     }
 }

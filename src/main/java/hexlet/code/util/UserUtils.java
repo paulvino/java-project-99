@@ -3,22 +3,20 @@ package hexlet.code.util;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserUtils {
 
-    @Autowired
     public static final String ADMIN_EMAIL = "hexlet@example.com";
 
-    @Autowired
     public static final String ADMIN_PASSWORD = "qwerty";
 
-    @Autowired
     private final UserRepository userRepository;
 
     @Bean

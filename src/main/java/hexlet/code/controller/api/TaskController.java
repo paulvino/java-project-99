@@ -6,6 +6,7 @@ import hexlet.code.dto.taskDto.TaskParamsDTO;
 import hexlet.code.dto.taskDto.TaskUpdateDTO;
 import hexlet.code.service.TaskService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@RequiredArgsConstructor
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<TaskDTO>> index(TaskParamsDTO taskParams) {
+    public ResponseEntity<List<TaskDTO>> index(TaskParamsDTO taskParams) {
         var result = taskService.getAll(taskParams);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
@@ -39,25 +40,25 @@ public class TaskController {
 
     @PostMapping(path = "")
     @ResponseStatus(HttpStatus.CREATED)
-    TaskDTO create(@Valid @RequestBody TaskCreateDTO taskData) {
+    public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskData) {
         return taskService.create(taskData);
     }
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    TaskDTO update(@Valid @RequestBody TaskUpdateDTO taskData, @PathVariable Long id) {
+    public TaskDTO update(@Valid @RequestBody TaskUpdateDTO taskData, @PathVariable Long id) {
         return taskService.update(taskData, id);
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    TaskDTO show(@PathVariable Long id) {
+    public TaskDTO show(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void destroy(@PathVariable Long id) {
+    public void destroy(@PathVariable Long id) {
         taskService.delete(id);
     }
 }
