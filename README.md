@@ -7,7 +7,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1081b3b5dc2b05d33479/test_coverage)](https://codeclimate.com/github/paulvino/java-project-99/test_coverage)
 
 ### Description:
-Task Manager is a task management system similar to [Reamine](http://www.redmine.org/). 
+Task Manager is a task management system similar to [Redmine](http://www.redmine.org/). 
 It allows you to set tasks, assign executors and change their statuses. 
 Registration and authentication are required to work with the system.
 
