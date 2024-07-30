@@ -11,7 +11,7 @@ Task Manager is a task management system similar to [Redmine](http://www.redmine
 It allows you to set tasks, assign executors and change their statuses. 
 Registration and authentication are required to work with the system.
 
-#### [Click here](https://java-project-99-ncps.onrender.com/) to try!
+#### [Click here](https://java-project-99-ncps.onrender.com/) to try! (page loading may take some time)
 Or [click here](https://java-project-99-ncps.onrender.com/swagger-ui/index.html) to see the API.
 
 ### How to run locally
